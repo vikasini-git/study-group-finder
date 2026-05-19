@@ -1,0 +1,510 @@
+/* ================= THE COZY STUDY DESIGN SYSTEM ================= */
+:root {
+    /* Warm, inviting light background (like premium cream sketchbook paper) */
+    --bg-main: #fdfbf7;
+    
+    /* Soft, translucent surfaces for cards (Milky Glassmorphism) */
+    --bg-surface: rgba(255, 255, 255, 0.65);
+    --bg-surface-hover: rgba(255, 255, 255, 0.9);
+    --card-shadow: rgba(142, 122, 106, 0.08);
+    --card-shadow-hover: rgba(142, 122, 106, 0.15);
+    
+    /* The Warm & Productive Palette */
+    --color-lavender: #b9a6ea;     /* Calm & focus */
+    --color-pink: #f4a2b6;         /* Soft accent */
+    --color-orange: #f08a5d;       /* Sunset warmth & action */
+    --color-yellow: #f9d56e;       /* Sunshine optimism & highlight */
+    
+    /* Human, high-end typography colors (Soft charcoal and deep espresso brown instead of harsh black) */
+    --text-main: #2d241e;          
+    --text-muted: #6e645e;         
+    
+    --font-primary: 'Poppins', sans-serif;
+    --cubic-bezier: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ================= GLOBAL RESETS & FEEL ================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    overflow-x: hidden;
+    line-height: 1.6;
+    
+    /* Warm organic lighting glows (Sunset orange and soft lavender overlapping behind the text) */
+    background-image: 
+        radial-gradient(circle at 85% 15%, rgba(240, 138, 93, 0.12) 0%, transparent 45%),
+        radial-gradient(circle at 15% 65%, rgba(185, 166, 234, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 50% 40%, rgba(249, 213, 110, 0.08) 0%, transparent 40%);
+    background-attachment: fixed;
+}
+
+/* ================= COZY TOP NAVIGATION BAR ================= */
+.navbar {
+    width: 100%;
+    padding: 20px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(253, 251, 247, 0.8);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(142, 122, 106, 0.08);
+    transition: all 0.3s var(--cubic-bezier);
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo i {
+    color: var(--color-lavender);
+    filter: drop-shadow(0 3px 6px rgba(185, 166, 234, 0.3));
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+}
+
+.nav-links a {
+    color: var(--text-muted);
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--color-orange);
+}
+
+/* BUTTONS THAT FEEL WARM AND CLICKABLE */
+.login-btn {
+    border: 1px solid rgba(110, 100, 94, 0.15);
+    background: transparent;
+    padding: 10px 22px;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s var(--cubic-bezier) !important;
+}
+
+.login-btn:hover {
+    background: rgba(142, 122, 106, 0.05);
+    border-color: var(--text-muted);
+}
+
+.signup-btn, .primary-btn {
+    /* Sunset-to-Pink gradient for the main focus click */
+    background: linear-gradient(135deg, var(--color-orange), var(--color-pink));
+    box-shadow: 0 4px 15px rgba(240, 138, 93, 0.25);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: white;
+    transition: all 0.3s var(--cubic-bezier);
+}
+
+.signup-btn:hover, .primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(240, 138, 93, 0.4);
+    opacity: 0.95;
+}
+
+.secondary-btn {
+    border: 1px solid rgba(142, 122, 106, 0.15);
+    background: #ffffff;
+    box-shadow: 0 2px 8px var(--card-shadow);
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: all 0.3s var(--cubic-bezier);
+}
+
+.secondary-btn:hover {
+    background: var(--bg-main);
+    border-color: rgba(142, 122, 106, 0.3);
+    transform: translateY(-1px);
+}
+
+/* ================= WELCOMING HERO SECTION ================= */
+.hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 40px 8%;
+    gap: 60px;
+}
+
+.hero-content {
+    flex: 1.1;
+}
+
+.hero-content h1 {
+    font-size: 58px;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -1.5px;
+}
+
+/* The highlighter dynamic effect on text */
+.hero-content span {
+    background: linear-gradient(to right, var(--color-lavender), var(--color-pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+}
+
+.hero-content p {
+    margin-top: 24px;
+    color: var(--text-muted);
+    font-size: 17px;
+    line-height: 1.8;
+    max-width: 520px;
+}
+
+.hero-buttons {
+    margin-top: 35px;
+    display: flex;
+    gap: 16px;
+}
+
+/* Aesthetic Frame Container */
+.hero-image {
+    flex: 0.9;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    align-items: flex-end;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(249, 213, 110, 0.2) 0%, transparent 70%);
+    padding: 30px;
+}
+
+/* Milky, Soft-blurred Glassmorphism Notebook Cards */
+.glass-card {
+    background: rgba(255, 255, 255, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    padding: 25px 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    width: 100%;
+    max-width: 320px;
+    box-shadow: 0 10px 30px var(--card-shadow);
+    transition: all 0.4s var(--cubic-bezier);
+}
+
+.glass-card h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.glass-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+/* Setting cozy pastel left highlights to cards */
+.glass-card:nth-child(1) {
+    transform: translateX(-30px);
+    border-left: 4px solid var(--color-lavender);
+}
+.glass-card:nth-child(2) {
+    transform: translateX(10px);
+    border-left: 4px solid var(--color-yellow);
+}
+
+.glass-card:hover {
+    transform: translateY(-5px) translateX(0);
+    background: #ffffff;
+    box-shadow: 0 15px 35px var(--card-shadow-hover);
+}
+
+/* ================= CLEAN REFINED STATS ROW ================= */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 50px 8%;
+}
+
+.stat-card {
+    position: relative;
+    padding: 15px;
+    text-align: center;
+}
+
+.stat-card h2 {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+/* Highlighting numbers like a marker brush stroke */
+.stats .stat-card:nth-child(1) h2 { color: #846ec5; }
+.stats .stat-card:nth-child(2) h2 { color: var(--color-orange); }
+.stats .stat-card:nth-child(3) h2 { color: #d65a80; }
+.stats .stat-card:nth-child(4) h2 { color: #cca225; }
+
+.stat-card p {
+    color: var(--text-muted);
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    margin-top: 4px;
+}
+
+/* ================= PASTEL WORKSPACE CARDS (FEATURES) ================= */
+.features {
+    padding: 100px 8%;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 38px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    margin-bottom: 60px;
+}
+
+.feature-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.feature-card {
+    background: var(--bg-surface);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 40px;
+    border-radius: 24px;
+    box-shadow: 0 8px 24px var(--card-shadow);
+    transition: all 0.4s var(--cubic-bezier);
+}
+
+.feature-card:hover {
+    background: #ffffff;
+    transform: translateY(-6px);
+    box-shadow: 0 16px 36px var(--card-shadow-hover);
+}
+
+/* Rotate dynamic colorful palette backgrounds through layout icons */
+.feature-card i {
+    font-size: 26px;
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    display: inline-block;
+}
+
+.feature-container .feature-card:nth-child(1) i { background: #f0ecfa; color: var(--color-lavender); }
+.feature-container .feature-card:nth-child(2) i { background: #fdf2f5; color: var(--color-pink); }
+.feature-container .feature-card:nth-child(3) i { background: #fef3ec; color: var(--color-orange); }
+.feature-container .feature-card:nth-child(4) i { background: #fefbec; color: #e5b823; }
+.feature-container .feature-card:nth-child(5) i { background: #f0ecfa; color: var(--color-lavender); }
+.feature-container .feature-card:nth-child(6) i { background: #fdf2f5; color: var(--color-pink); }
+
+.feature-card h3 {
+    font-size: 19px;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ================= SOFT REVIEWS ================= */
+.testimonials {
+    padding: 60px 8% 100px 8%;
+}
+
+.testimonial-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.testimonial-card {
+    background: rgba(255, 255, 255, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 35px;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 15px var(--card-shadow);
+}
+
+.testimonial-card p {
+    font-size: 15px;
+    color: var(--text-main);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.testimonial-card h4 {
+    margin-top: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+/* ================= THE WARM BANNER SUNSET (CTA) ================= */
+.cta-section {
+    padding: 100px 8%;
+    text-align: center;
+    /* Beautiful radial blend of sunshine and pink sunset fields */
+    background: radial-gradient(circle at center, rgba(249, 213, 110, 0.15) 0%, rgba(244, 162, 182, 0.1) 50%, transparent 100%);
+}
+
+.cta-section h2 {
+    font-size: 44px;
+    font-weight: 700;
+    max-width: 650px;
+    margin: 0 auto;
+    letter-spacing: -1px;
+}
+
+.cta-section p {
+    margin: 20px 0 35px 0;
+    color: var(--text-muted);
+    font-size: 16px;
+}
+
+/* ================= MINIMALIST EARTHY FOOTER ================= */
+.footer {
+    padding: 50px 8% 40px 8%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 1px solid rgba(142, 122, 106, 0.1);
+}
+
+.footer-logo {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer-logo i {
+    color: var(--color-lavender);
+}
+
+.footer p {
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.footer-links {
+    margin-top: 25px;
+    display: flex;
+    gap: 30px;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    font-size: 13px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--color-orange);
+}
+
+/* ================= RESPONSIVE ADJUSTMENTS ================= */
+.menu-toggle {
+    display: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: var(--text-main);
+}
+
+@media(max-width: 1024px) {
+    .hero {
+        flex-direction: column;
+        text-align: center;
+        gap: 40px;
+    }
+    .hero-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .hero-buttons {
+        justify-content: center;
+    }
+    .hero-image {
+        align-items: center;
+        width: 100%;
+    }
+    .glass-card:nth-child(1), .glass-card:nth-child(2) {
+        transform: translateX(0);
+    }
+    .feature-container, .testimonial-container, .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media(max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        flex-direction: column;
+        width: 260px;
+        height: 100vh;
+        background: #ffffff;
+        box-shadow: -10px 0 30px rgba(0,0,0,0.05);
+        padding: 100px 30px;
+        gap: 30px;
+        align-items: flex-start;
+        transition: right 0.4s var(--cubic-bezier);
+    }
+    .nav-links.active {
+        right: 0;
+    }
+    .feature-container, .testimonial-container, .stats {
+        grid-template-columns: 1fr;
+    }
+    .hero-content h1 { font-size: 38px; }
+    .section-title { font-size: 30px; }
+}
