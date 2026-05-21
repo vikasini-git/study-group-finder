@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to PeerStream - Sign In or Sign Up</title>
+  <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+
+  <div class="auth-container">
+    <div class="auth-branding">
+      <h1>PeerStream</h1>
+      <p>Connect with your classmates, share resources, and study in real-time sync circles.</p>
+    </div>
+
+    <!-- Interface Card Wrapper supporting 3D flip animation -->
+    <div class="auth-card-flipper" id="authFlipper">
+      
+      <!-- ========================================== -->
+      <!-- FRONT SIDE: LOGIN INTERFACE                -->
+      <!-- ========================================== -->
+      <div class="auth-card-side face-front">
+        <h3>Sign In to Your Workspace</h3>
+        <div class="alert-banner error-msg" id="loginError" style="display: none;"></div>
+        
+        <form id="loginForm" novalidate>
+          <div class="input-group">
+            <label for="loginEmail">Institutional Email</label>
+            <input type="email" id="loginEmail" placeholder="you@vardhaman.org" required>
+          </div>
+          
+          <div class="input-group">
+            <label for="loginPassword">Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn btn-auth">Enter Dashboard &rarr;</button>
+        </form>
+        
+        <footer class="auth-swap-footer">
+          <p>New to PeerStream? <button class="link-btn" id="toSignupBtn">Create an account</button></p>
+        </footer>
+      </div>
+
+      <!-- ========================================== -->
+      <!-- BACK SIDE: SIGNUP INTERFACE                -->
+      <!-- ========================================== -->
+      <div class="auth-card-side face-back">
+        <h3>Create Your Peer Profile</h3>
+        <div class="alert-banner error-msg" id="signupError" style="display: none;"></div>
+        
+        <form id="signupForm" novalidate>
+          <div class="input-group">
+            <label for="signupName">Full Name</label>
+            <input type="text" id="signupName" placeholder="Alex" required>
+          </div>
+
+          <div class="input-group">
+            <label for="signupEmail">Institutional Email</label>
+            <input type="email" id="signupEmail" placeholder="student@institution.edu" required>
+          </div>
+
+          <div class="input-group">
+            <label for="signupSubject">Primary Academic Major</label>
+            <select id="signupSubject" required>
+              <option value="" disabled selected>Select your domain...</option>
+              <option value="Computer Science">Computer Science & Engineering</option>
+              <option value="Electrical Engineering">Electrical Engineering</option>
+              <option value="Mechanical Engineering">Mechanical Engineering</option>
+              <option value="Business & Commerce">Business & Commerce</option>
+            </select>
+          </div>
+          
+          <div class="input-group">
+            <label for="signupPassword">Password</label>
+            <input type="password" id="signupPassword" placeholder="Minimum 6 characters" required>
+          </div>
+
+          <button type="submit" class="btn btn-auth">Register & Initialize &rarr;</button>
+        </form>
+        
+        <footer class="auth-swap-footer">
+          <p>Already have an account? <button class="link-btn" id="toLoginBtn">Sign in here</button></p>
+        </footer>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Shared framework script tags -->
+  <script src="script.js"></script>
+  <script src="storage.js"></script>
+  <script src="auth.js"></script>
+  <script src="auth-view.js"></script>
+</body>
+</html>

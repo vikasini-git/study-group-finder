@@ -1,264 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Basic Setup -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!-- Website Title -->
-    <title>Study Group Finder</title>
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- CSS File -->
-    <link rel="stylesheet" href="css/style.css">
-
-    <!-- Icons -->
-    <script src="https://kit.fontawesome.com/4b8b59b7b7.js" crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PeerStream Study Hub</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <!-- ================= NAVBAR ================= -->
-
-    <header class="navbar">
-
-        <div class="logo">
-            <i class="fa-solid fa-graduation-cap"></i>
-            <span>Study Group Finder</span>
+  <!-- Main Application Wrapper -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <h2>PeerStream</h2>
+      </div>
+      <nav class="nav-links">
+        <a href="#" class="nav-item active">Dashboard</a>
+        <a href="#" class="nav-item">My Notes</a>
+        <a href="#" class="nav-item">Analytics</a>
+      </nav>
+      <div class="user-profile-summary">
+        <div class="user-avatar">A</div>
+        <div class="user-meta">
+          <span class="user-name">Alex</span>
+          <span class="user-role">CS Student</span>
         </div>
+      </div>
+    </aside>
 
-        <!-- Navigation Links -->
-        <nav class="nav-links" id="navLinks">
-            <a href="#">Home</a>
-            <a href="#features">Features</a>
-            <a href="#testimonials">Reviews</a>
-            <a href="login.html" class="login-btn">Login</a>
-            <a href="signup.html" class="signup-btn">Get Started</a>
-        </nav>
-
-        <!-- Hamburger Menu -->
-        <div class="menu-toggle" id="menuToggle">
-            <i class="fa-solid fa-bars"></i>
+    <!-- Main Content Workspace Area -->
+    <main class="main-workspace">
+      
+      <!-- Top Dynamic Dashboard Header Bar -->
+      <header class="workspace-header">
+        <div>
+          <h1>Welcome Back, Alex</h1>
+          <p class="subtitle">Here is what your study networks are up to today.</p>
         </div>
+        <button class="btn btn-primary" id="createNewGroupBtn">+ Create Group</button>
+      </header>
 
-    </header>
-
-    <!-- ================= HERO SECTION ================= -->
-
-    <section class="hero">
-
-        <div class="hero-content">
-
-            <h1>
-                Find Your Perfect
-                <span>Study Partner</span>
-            </h1>
-
-            <p>
-                Connect with students, create study groups,
-                share notes, schedule sessions, and boost
-                your learning experience together.
-            </p>
-
-            <!-- CTA Buttons -->
-            <div class="hero-buttons">
-                <a href="signup.html" class="primary-btn">
-                    Get Started
-                </a>
-
-                <a href="#features" class="secondary-btn">
-                    Explore Features
-                </a>
+      <!-- Dashboard Grid Layout -->
+      <div class="dashboard-grid">
+        
+        <!-- Left Column: Active Study Groups Cluster -->
+        <section class="dashboard-section groups-section">
+          <h3>Your Study Clusters</h3>
+          <div class="groups-list">
+            
+            <!-- Group Card 1 -->
+            <div class="group-card-action" data-group-id="g1">
+              <div class="card-header-block">
+                <span class="badge badge-cs">Computer Science</span>
+                <h4>Algorithms Core</h4>
+              </div>
+              <p class="card-description">Reviewing AVL Trees, SLL implementations, and expression evaluation.</p>
+              <div class="card-footer-meta">
+                <span class="member-indicator">2 Active Members</span>
+                <span class="action-link">Open Room &rarr;</span>
+              </div>
             </div>
 
+            <!-- Group Card 2 -->
+            <div class="group-card-action" data-group-id="g2">
+              <div class="card-header-block">
+                <span class="badge badge-ee">Electrical Eng.</span>
+                <h4>Embedded Circuits</h4>
+              </div>
+              <p class="card-description">Working out Arduino and ESP32 microcontroller mapping challenges.</p>
+              <div class="card-footer-meta">
+                <span class="member-indicator">1 Active Member</span>
+                <span class="action-link">Open Room &rarr;</span>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- Right Column: AI Co-Pilot & Productivity Assets -->
+        <section class="dashboard-section utilities-section">
+          
+          <!-- AI Recommendations Hook -->
+          <div class="panel-card ai-panel">
+            <h3>AI Study Advisor</h3>
+            <div id="aiSuggestionsContainer">
+              <!-- Dynamically populated via script.js execution -->
+              <div class="loading-placeholder">Analyzing metrics...</div>
+            </div>
+          </div>
+
+          <!-- Quick Notes Pad -->
+          <div class="panel-card notes-panel">
+            <h3>Quick Scratchpad</h3>
+            <textarea id="scratchpadArea" placeholder="Type quick review tags, formula steps, or references here..."></textarea>
+            <button class="btn btn-secondary btn-sm" id="saveNoteBtn">Save to Notes Workspace</button>
+          </div>
+
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Real-time Collaborative Chat Modal View Layer -->
+  <div class="modal-backdrop" id="chatModal" style="display: none;">
+    <div class="modal-window chat-window-layout">
+      
+      <!-- Room Title Workspace Header -->
+      <header class="chat-modal-header">
+        <div class="chat-title-details">
+          <h2 id="chatGroupName">Group Name Placeholder</h2>
+          <div class="chat-sub-breadcrumbs">
+            <span id="chatGroupSubject" class="meta-tag">Subject</span>
+            <span class="meta-separator">&bull;</span>
+            <span id="chatMemberCount" class="meta-tag">0 members</span>
+          </div>
         </div>
+        <button class="close-modal-trigger" id="chatClose" aria-label="Close Chat Window">&times;</button>
+      </header>
 
-        <!-- Hero Image -->
-        <div class="hero-image">
+      <!-- Dynamic Reactive Message Stream Pane -->
+      <div class="chat-messages-container" id="chatMessages">
+        <!-- Message bubbles or empty states append sequentially here -->
+      </div>
 
-            <div class="glass-card">
-                <h3>Live Study Rooms</h3>
-                <p>120+ Active Groups</p>
-            </div>
-
-            <div class="glass-card">
-                <h3>AI Matching</h3>
-                <p>Find compatible learners</p>
-            </div>
-
+      <!-- Live Input Action Box Area -->
+      <footer class="chat-input-footer">
+        <div class="input-compose-bar">
+          <input type="text" id="msgInput" placeholder="Message your study group... (Press Enter to send)" autocomplete="off">
+          <button class="btn btn-primary" id="sendMsgBtn">Send</button>
         </div>
+      </footer>
 
-    </section>
+    </div>
+  </div>
 
-    <!-- ================= STATS SECTION ================= -->
-
-    <section class="stats">
-
-        <div class="stat-card">
-            <h2>10K+</h2>
-            <p>Students</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>2K+</h2>
-            <p>Study Groups</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>50K+</h2>
-            <p>Notes Shared</p>
-        </div>
-
-        <div class="stat-card">
-            <h2>95%</h2>
-            <p>Success Rate</p>
-        </div>
-
-    </section>
-
-    <!-- ================= FEATURES SECTION ================= -->
-
-    <section class="features" id="features">
-
-        <h2 class="section-title">
-            Powerful Features
-        </h2>
-
-        <div class="feature-container">
-
-            <div class="feature-card">
-                <i class="fa-solid fa-users"></i>
-                <h3>Create Groups</h3>
-                <p>
-                    Build your own study community and invite students.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-comments"></i>
-                <h3>Group Chat</h3>
-                <p>
-                    Communicate with teammates in real-time.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-book"></i>
-                <h3>Share Notes</h3>
-                <p>
-                    Upload and access study materials easily.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-calendar-days"></i>
-                <h3>Smart Scheduling</h3>
-                <p>
-                    Organize study sessions with reminders.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-brain"></i>
-                <h3>AI Matching</h3>
-                <p>
-                    Get paired with compatible study partners.
-                </p>
-            </div>
-
-            <div class="feature-card">
-                <i class="fa-solid fa-chart-line"></i>
-                <h3>Progress Tracking</h3>
-                <p>
-                    Monitor your learning growth effectively.
-                </p>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ================= TESTIMONIALS ================= -->
-
-    <section class="testimonials" id="testimonials">
-
-        <h2 class="section-title">
-            What Students Say
-        </h2>
-
-        <div class="testimonial-container">
-
-            <div class="testimonial-card">
-                <p>
-                    "This platform helped me find amazing coding partners!"
-                </p>
-
-                <h4>— Student User</h4>
-            </div>
-
-            <div class="testimonial-card">
-                <p>
-                    "The AI matching feature is surprisingly useful."
-                </p>
-
-                <h4>— Engineering Student</h4>
-            </div>
-
-            <div class="testimonial-card">
-                <p>
-                    "Beautiful interface and very easy to use."
-                </p>
-
-                <h4>— University Learner</h4>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- ================= CTA SECTION ================= -->
-
-    <section class="cta-section">
-
-        <h2>
-            Ready to Level Up Your Learning?
-        </h2>
-
-        <p>
-            Join thousands of students already studying smarter.
-        </p>
-
-        <a href="signup.html" class="primary-btn">
-            Create Free Account
-        </a>
-
-    </section>
-
-    <!-- ================= FOOTER ================= -->
-
-    <footer class="footer">
-
-        <div class="footer-logo">
-            <i class="fa-solid fa-graduation-cap"></i>
-            Study Group Finder
-        </div>
-
-        <p>
-            Built for students. Designed for collaboration.
-        </p>
-
-        <div class="footer-links">
-            <a href="#">Privacy</a>
-            <a href="#">Terms</a>
-            <a href="#">Support</a>
-        </div>
-
-    </footer>
-
-    <!-- JavaScript -->
-    <script src="js/app.js"></script>
-
+  <!-- Load Core Script Bundle Execution -->
+  <script src="script.js"></script>
 </body>
 </html>
