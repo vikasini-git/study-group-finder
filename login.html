@@ -222,7 +222,7 @@
                 localStorage.setItem('session_token', JSON.stringify({ name: matchedUser.name, email: matchedUser.email }));
 
                 showAlert('Login verified! Connecting... ✓', 'success');
-                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+                setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
 
             } catch (err) {
                 showAlert(err.message, 'error');

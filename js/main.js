@@ -180,3 +180,33 @@ window.onload = function() {
     secureAppSession();
     if (originalOnload) originalOnload();
 };
+// Centralized Data Logic
+function saveGroup(event) {
+    event.preventDefault();
+    const group = {
+        name: document.getElementById('groupName').value,
+        desc: document.getElementById('groupDesc').value,
+        id: Date.now()
+    };
+
+    const groups = JSON.parse(localStorage.getItem('myGroups') || '[]');
+    groups.push(group);
+    localStorage.setItem('myGroups', JSON.stringify(groups));
+    
+    alert('Group created!');
+    renderGroups(); // Update the UI immediately
+    showView('dashboard'); // Redirect to dashboard view
+}
+
+function renderGroups() {
+    const groups = JSON.parse(localStorage.getItem('myGroups') || '[]');
+    const container = document.getElementById('groups-grid');
+    if (!container) return;
+    
+    container.innerHTML = groups.map(g => `
+        <div class="p-4 bg-white dark:bg-campus-900 rounded-xl shadow-sm border border-campus-800">
+            <h3 class="font-bold text-white">${g.name}</h3>
+            <p class="text-sm text-slate-400">${g.desc}</p>
+        </div>
+    `).join('');
+}

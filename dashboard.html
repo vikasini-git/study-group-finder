@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTribe - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        campus: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            300: '#7cc8fc',
+                            400: '#38aef9',
+                            500: '#0e94ea',
+                            600: '#0276c8',
+                            700: '#035ea2',
+                            800: '#075086',
+                            900: '#0c436f',
+                            950: '#071d33', // Deep rich modern campus dark blue
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar behavior for a premium web-app feel */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        .dark ::webkit-scrollbar-thumb { background: #075086; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #bae0fd; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-campus-50 dark:bg-campus-950 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+
+    <div class="flex h-screen overflow-hidden">
+        
+        <aside class="w-64 bg-white dark:bg-campus-900 border-r border-slate-200 dark:border-campus-800 flex flex-col justify-between z-20 transition-all duration-300">
+            <div>
+                <div class="p-6 flex items-center gap-3 border-b border-slate-100 dark:border-campus-800">
+                    <div class="w-10 h-10 bg-campus-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-campus-500/30">
+                        <i class="fa-solid fa-graduation-cap text-lg"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight tracking-wide dark:text-white">StudyTribe</h1>
+                        <span class="text-xs text-campus-500 dark:text-campus-400 font-medium">Campus Hub</span>
+                    </div>
+                </div>
+
+                <nav class="p-4 space-y-1.5" id="sidebar-nav">
+                    <button data-target="dashboard" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 bg-campus-600 text-white shadow-md shadow-campus-600/20">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-chart-pie text-base"></i>Dashboard</span>
+                    </button>
+                    <button data-target="explore" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-compass text-base"></i>Explore Groups</span>
+                    </button>
+                    <button data-target="groups" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-users text-base"></i>My Groups</span>
+                    </button>
+                    <button data-target="chat" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-comments text-base"></i>Chat</span>
+                        <span class="bg-campus-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold">3</span>
+                    </button>
+                    <button data-target="notes" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-file-lines text-base"></i>Notes </span>
+                    </button>
+                    <button data-target="schedule" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-calendar-days text-base"></i>Schedule</span>
+                    </button>
+                    <button data-target="matches" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-wand-magic-sparkles text-base"></i>AI Partner Matches</span>
+                    </button>
+                    <button data-target="notifications" class="nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200">
+                        <span class="flex items-center gap-3.5"><i class="fa-solid fa-bell text-base"></i>Notifications</span>
+                        <span class="bg-amber-500 text-white text-[11px] px-2 py-0.5 rounded-full font-bold">5</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-slate-100 dark:border-campus-800 space-y-1">
+                <button data-target="settings" class="nav-item w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 transition-all">
+                    <i class="fa-solid fa-sliders text-base"></i>Settings
+                </button>
+                <button class="w-full flex items-center gap-3.5 px-4 py-3 rounded-xl font-medium text-sm text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>Logout
+                </button>
+            </div>
+        </aside>
+
+        <div class="flex-1 flex flex-col h-screen overflow-hidden">
+            
+            <header class="h-16 bg-white dark:bg-campus-900 border-b border-slate-200 dark:border-campus-800 px-8 flex items-center justify-between dynamic-header z-10 transition-all duration-300">
+                <div class="relative w-80">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" placeholder="Search groups, shared notes, peers..." class="w-full pl-10 pr-4 py-2 bg-slate-100 dark:bg-campus-950/60 border border-transparent focus:border-campus-500 rounded-xl text-sm focus:outline-none transition-all dark:text-white dark:placeholder-slate-400">
+                    <kbd class="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] bg-slate-200 dark:bg-campus-800 px-1.5 py-0.5 rounded font-mono text-slate-500 dark:text-slate-400">/</kbd>
+                </div>
+
+                <div class="flex items-center gap-5">
+                    <button onclick="toggleTheme()" class="w-9 w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-campus-800 hover:bg-slate-200 dark:hover:bg-campus-700 text-slate-600 dark:text-amber-400 transition-all" title="Toggle System Palette">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:block"></i>
+                    </button>
+
+                    <button class="relative w-9 h-9 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-campus-800 hover:bg-slate-200 dark:hover:bg-campus-700 text-slate-600 dark:text-slate-300 transition-all">
+                        <i class="fa-solid fa-bell"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-campus-500 rounded-full"></span>
+                    </button>
+
+                    <div class="flex items-center gap-3 border-l border-slate-200 dark:border-campus-800 pl-5">
+                        <img src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=100" alt="Student Profile" class="w-9 h-9 rounded-xl object-cover ring-2 ring-campus-500/20">
+                        <div class="hidden md:block text-left">
+                            <p class="text-sm font-semibold leading-none dark:text-white">Rohan</p>
+                            <p class="text-[11px] text-slate-400 mt-1">CSE Student</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="flex-1 overflow-y-auto p-8 dynamic-content-pane">
+                
+                <div id="view-dashboard" class="view-pane space-y-8">
+                    
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold tracking-tight dark:text-white flex items-center gap-2">
+                                Welcome back, Rohan! <span class="animate-bounce">👋</span>
+                            </h2>
+                            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Track updates, collaborate with your teams, and accelerate your learning milestones.</p>
+                        </div>
+                        <button class="bg-campus-600 hover:bg-campus-700 active:scale-95 text-white px-5 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 shadow-lg shadow-campus-600/15 transition-all">
+                            <i class="fa-solid fa-circle-plus"></i> Create Workspace Group
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200/80 dark:border-campus-800/80 p-5 rounded-2xl flex items-center gap-4 transition-all">
+                            <div class="w-12 h-12 rounded-xl bg-campus-500/10 text-campus-600 dark:text-campus-400 flex items-center justify-center text-xl"><i class="fa-solid fa-layer-group"></i></div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Groups Joined</p>
+                                <h3 class="text-2xl font-bold dark:text-white mt-0.5">8</h3>
+                                <p class="text-[11px] text-emerald-500 font-medium mt-0.5"><i class="fa-solid fa-arrow-trend-up mr-0.5"></i> +2 new this week</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200/80 dark:border-campus-800/80 p-5 rounded-2xl flex items-center gap-4 transition-all">
+                            <div class="w-12 h-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl"><i class="fa-solid fa-square-plus"></i></div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Created</p>
+                                <h3 class="text-2xl font-bold dark:text-white mt-0.5">3</h3>
+                                <p class="text-[11px] text-emerald-500 font-medium mt-0.5"><i class="fa-solid fa-arrow-trend-up mr-0.5"></i> +1 new this week</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200/80 dark:border-campus-800/80 p-5 rounded-2xl flex items-center gap-4 transition-all">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl"><i class="fa-solid fa-folder-open"></i></div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Notes Shared</p>
+                                <h3 class="text-2xl font-bold dark:text-white mt-0.5">24</h3>
+                                <p class="text-[11px] text-emerald-500 font-medium mt-0.5"><i class="fa-solid fa-arrow-trend-up mr-0.5"></i> +6 this week</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200/80 dark:border-campus-800/80 p-5 rounded-2xl flex items-center gap-4 transition-all">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl"><i class="fa-solid fa-hourglass-split"></i></div>
+                            <div>
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Study Hours</p>
+                                <h3 class="text-2xl font-bold dark:text-white mt-0.5">48h</h3>
+                                <p class="text-[11px] text-amber-500 font-medium mt-0.5"><i class="fa-solid fa-arrow-trend-up mr-0.5"></i> +12h this week</p>
+                            </div>
+                        </div>
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200/80 dark:border-campus-800/80 p-5 rounded-2xl flex items-center gap-4 transition-all">
+                            <div class="w-12 h-12 rounded-xl bg-campus-600/10 text-campus-500 flex items-center justify-center text-xl"><i class="fa-solid fa-bullseye"></i></div>
+                            <div class="flex-1">
+                                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Goal Progress</p>
+                                <h3 class="text-2xl font-bold dark:text-white mt-0.5">75%</h3>
+                                <div class="w-full bg-slate-100 dark:bg-campus-800 h-1.5 rounded-full mt-2">
+                                    <div class="bg-campus-500 h-1.5 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-5">
+                                    <h4 class="font-bold text-base dark:text-white">My Groups</h4>
+                                    <a href="#" class="text-xs font-semibold text-campus-500 hover:underline">View All</a>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-3 bg-slate-50 dark:bg-campus-950/40 rounded-xl flex items-center justify-between hover:border-campus-500/40 border border-transparent transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-campus-600 text-white flex items-center justify-center text-sm font-semibold"><i class="fa-solid fa-code"></i></div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Data Structures Study Group</h5>
+                                                <p class="text-[11px] text-emerald-500 flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online Active</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </div>
+                                    <div class="p-3 bg-slate-50 dark:bg-campus-950/40 rounded-xl flex items-center justify-between hover:border-campus-500/40 border border-transparent transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm font-semibold"><i class="fa-solid fa-laptop-code"></i></div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Web Development Team</h5>
+                                                <p class="text-[11px] text-emerald-500 flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online Active</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </div>
+                                    <div class="p-3 bg-slate-50 dark:bg-campus-950/40 rounded-xl flex items-center justify-between hover:border-campus-500/40 border border-transparent transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm font-semibold"><i class="fa-solid fa-database"></i></div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">DBMS Practitioners</h5>
+                                                <p class="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Inactive Offline</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </div>
+                                    <div class="p-3 bg-slate-50 dark:bg-campus-950/40 rounded-xl flex items-center justify-between hover:border-campus-500/40 border border-transparent transition-all">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-9 h-9 rounded-lg bg-amber-600 text-white flex items-center justify-center text-sm font-semibold"><i class="fa-solid fa-microchip"></i></div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Operating Systems Squad</h5>
+                                                <p class="text-[11px] text-emerald-500 flex items-center gap-1 mt-0.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Online Active</p>
+                                            </div>
+                                        </div>
+                                        <button class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-5">
+                                    <h4 class="font-bold text-base dark:text-white">Upcoming Schedule</h4>
+                                    <a href="#" class="text-xs font-semibold text-campus-500 hover:underline">View Calendar</a>
+                                </div>
+                                <div class="space-y-3.5">
+                                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-campus-800 pb-3">
+                                        <div class="flex items-center gap-3.5">
+                                            <div class="w-11 h-11 bg-slate-100 dark:bg-campus-950 rounded-xl flex flex-col items-center justify-center text-center p-1.5">
+                                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 leading-none">MAY</span>
+                                                <span class="text-sm font-black text-slate-700 dark:text-white leading-tight">25</span>
+                                            </div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Data Structures Discussion</h5>
+                                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>4:00 PM - 5:30 PM</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-campus-50 dark:bg-campus-950 text-campus-600 dark:text-campus-400 text-[10px] px-2.5 py-1 rounded-md font-bold">Online</span>
+                                    </div>
+                                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-campus-800 pb-3">
+                                        <div class="flex items-center gap-3.5">
+                                            <div class="w-11 h-11 bg-slate-100 dark:bg-campus-950 rounded-xl flex flex-col items-center justify-center text-center p-1.5">
+                                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 leading-none">MAY</span>
+                                                <span class="text-sm font-black text-slate-700 dark:text-white leading-tight">26</span>
+                                            </div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Web Dev Project Meeting</h5>
+                                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>10:00 AM - 11:30 AM</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-campus-50 dark:bg-campus-950 text-campus-600 dark:text-campus-400 text-[10px] px-2.5 py-1 rounded-md font-bold">Online</span>
+                                    </div>
+                                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-campus-800 pb-3">
+                                        <div class="flex items-center gap-3.5">
+                                            <div class="w-11 h-11 bg-slate-100 dark:bg-campus-950 rounded-xl flex flex-col items-center justify-center text-center p-1.5">
+                                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 leading-none">MAY</span>
+                                                <span class="text-sm font-black text-slate-700 dark:text-white leading-tight">28</span>
+                                            </div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">DBMS Query Practice</h5>
+                                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>6:00 PM - 7:30 PM</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-slate-100 dark:bg-campus-800 text-slate-500 dark:text-slate-300 text-[10px] px-2.5 py-1 rounded-md font-bold">Offline</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-3.5">
+                                            <div class="w-11 h-11 bg-slate-100 dark:bg-campus-950 rounded-xl flex flex-col items-center justify-center text-center p-1.5">
+                                                <span class="text-[9px] uppercase tracking-wider font-bold text-slate-400 leading-none">MAY</span>
+                                                <span class="text-sm font-black text-slate-700 dark:text-white leading-tight">30</span>
+                                            </div>
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">OS Concepts Revision</h5>
+                                                <p class="text-[11px] text-slate-400 mt-0.5"><i class="fa-regular fa-clock mr-1"></i>5:00 PM - 6:30 PM</p>
+                                            </div>
+                                        </div>
+                                        <span class="bg-campus-50 dark:bg-campus-950 text-campus-600 dark:text-campus-400 text-[10px] px-2.5 py-1 rounded-md font-bold">Online</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-5">
+                                    <h4 class="font-bold text-base dark:text-white">AI Study Partner Matches</h4>
+                                    <a href="#" class="text-xs font-semibold text-campus-500 hover:underline">View All</a>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="p-2.5 rounded-xl border border-slate-100 dark:border-campus-800 flex items-center justify-between bg-slate-50/50 dark:bg-transparent">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100" class="w-9 h-9 rounded-lg object-cover" alt="Ananya Singh">
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Ananya Singh</h5>
+                                                <p class="text-[10px] text-slate-400">Interests: DSA, Algorithms</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right flex items-center gap-2">
+                                            <span class="text-[11px] font-bold text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-full">92%</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-2.5 rounded-xl border border-slate-100 dark:border-campus-800 flex items-center justify-between bg-slate-50/50 dark:bg-transparent">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100" class="w-9 h-9 rounded-lg object-cover" alt="Arjun Mehta">
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Arjun Mehta</h5>
+                                                <p class="text-[10px] text-slate-400">Interests: Web Dev, DBMS</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right flex items-center gap-2">
+                                            <span class="text-[11px] font-bold text-campus-500 bg-campus-500/10 px-2 py-0.5 rounded-full">88%</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-2.5 rounded-xl border border-slate-100 dark:border-campus-800 flex items-center justify-between bg-slate-50/50 dark:bg-transparent">
+                                        <div class="flex items-center gap-3">
+                                            <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100" class="w-9 h-9 rounded-lg object-cover" alt="Neha Verma">
+                                            <div>
+                                                <h5 class="text-xs font-bold dark:text-white">Neha Verma</h5>
+                                                <p class="text-[10px] text-slate-400">Interests: OS, Networks</p>
+                                            </div>
+                                        </div>
+                                        <div class="text-right flex items-center gap-2">
+                                            <span class="text-[11px] font-bold text-campus-500 bg-campus-500/10 px-2 py-0.5 rounded-full">85%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 lg:col-span-1">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="font-bold text-sm dark:text-white">Progress</h4>
+                                <span class="text-[11px] bg-slate-100 dark:bg-campus-800 px-2 py-1 rounded text-slate-500 dark:text-slate-300 font-medium">May 2026</span>
+                            </div>
+                            <div class="h-44 relative w-full">
+                                <canvas id="progressLineChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 lg:col-span-1">
+                            <h4 class="font-bold text-sm dark:text-white mb-4">Recent Activity </h4>
+                            <div class="space-y-3.5 relative dashboard-timeline">
+                                <div class="flex gap-3 text-xs">
+                                    <div class="mt-0.5 w-6 h-6 rounded-full bg-campus-500/10 text-campus-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-right-to-bracket text-[10px]"></i></div>
+                                    <div>
+                                        <p class="font-semibold dark:text-white">Joined Workspace: Web Development Team</p>
+                                        <span class="text-[10px] text-slate-400">2 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 text-xs">
+                                    <div class="mt-0.5 w-6 h-6 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-cloud-arrow-up text-[10px]"></i></div>
+                                    <div>
+                                        <p class="font-semibold dark:text-white">Uploaded notes on DBMS normalization models</p>
+                                        <span class="text-[10px] text-slate-400">5 hours ago</span>
+                                    </div>
+                                </div>
+                                <div class="flex gap-3 text-xs">
+                                    <div class="mt-0.5 w-6 h-6 rounded-full bg-purple-500/10 text-purple-600 flex items-center justify-center flex-shrink-0"><i class="fa-solid fa-message text-[10px]"></i></div>
+                                    <div>
+                                        <p class="font-semibold dark:text-white">Ananya Singh dropped a code solution link</p>
+                                        <span class="text-[10px] text-slate-400">Yesterday</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white dark:bg-campus-900 border border-slate-200 dark:border-campus-800/60 rounded-2xl p-6 lg:col-span-1">
+                            <h4 class="font-bold text-sm dark:text-white mb-4">Quick Infrastructure Actions</h4>
+                            <div class="grid grid-cols-2 gap-3">
+                                <button class="p-4 bg-slate-50 dark:bg-campus-950/40 hover:bg-campus-500/10 border border-slate-100 dark:border-campus-800 rounded-xl text-center flex flex-col items-center justify-center group transition-all">
+                                    <div class="w-9 h-9 rounded-lg bg-campus-500 text-white flex items-center justify-center mb-2 shadow-md shadow-campus-500/20"><i class="fa-solid fa-file-arrow-up"></i></div>
+                                    <span class="text-xs font-bold dark:text-white block">Upload Notes</span>
+                                </button>
+                                <button class="p-4 bg-slate-50 dark:bg-campus-950/40 hover:bg-campus-500/10 border border-slate-100 dark:border-campus-800 rounded-xl text-center flex flex-col items-center justify-center group transition-all">
+                                    <div class="w-9 h-9 rounded-lg bg-purple-500 text-white flex items-center justify-center mb-2 shadow-md shadow-purple-500/20"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                                    <span class="text-xs font-bold dark:text-white block">Find Groups</span>
+                                </button>
+                                <button class="p-4 bg-slate-50 dark:bg-campus-950/40 hover:bg-campus-500/10 border border-slate-100 dark:border-campus-800 rounded-xl text-center flex flex-col items-center justify-center group transition-all">
+                                    <div class="w-9 h-9 rounded-lg bg-emerald-500 text-white flex items-center justify-center mb-2 shadow-md shadow-emerald-500/20"><i class="fa-solid fa-comment-nodes"></i></div>
+                                    <span class="text-xs font-bold dark:text-white block">Start Chat</span>
+                                </button>
+                                <button class="p-4 bg-slate-50 dark:bg-campus-950/40 hover:bg-campus-500/10 border border-slate-100 dark:border-campus-800 rounded-xl text-center flex flex-col items-center justify-center group transition-all">
+                                    <div class="w-9 h-9 rounded-lg bg-amber-500 text-white flex items-center justify-center mb-2 shadow-md shadow-amber-500/20"><i class="fa-solid fa-bolt"></i></div>
+                                    <span class="text-xs font-bold dark:text-white block">AI Matches</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="view-explore" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">Explore Groups Workspace</h3><p class="text-sm text-slate-400 mt-2">Discover active local sub-communities based on computer science disciplines and standard schedules.</p></div>
+                <div id="view-groups" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">My Managed Teams</h3><p class="text-sm text-slate-400 mt-2">Administration panel for your created and joined study structures.</p></div>
+                <div id="view-chat" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">Realtime Chat Engine</h3><p class="text-sm text-slate-400 mt-2">Active communications pipeline with peers and team channels.</p></div>
+                <div id="view-notes" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">Notes </h3><p class="text-sm text-slate-400 mt-2">Centralized data distribution framework containing student summaries and documents.</p></div>
+                <div id="view-schedule" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">Schedule</h3><p class="text-sm text-slate-400 mt-2">Consolidated view mapping out milestones, exams, and team session schedules.</p></div>
+                <div id="view-matches" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">AI Matches</h3><p class="text-sm text-slate-400 mt-2">System-generated profiles matching individuals across academic competencies.</p></div>
+                <div id="view-notifications" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">Alert Logs</h3><p class="text-sm text-slate-400 mt-2">Historical pipeline logging infrastructure events, workspace links, and invites.</p></div>
+                <div id="view-settings" class="view-pane hidden"><h3 class="text-xl font-bold dark:text-white">System Settings</h3><p class="text-sm text-slate-400 mt-2">Configure profile traits, visibility matrices, and security settings.</p></div>
+
+            </main>
+        </div>
+    </div>
+
+    <script>
+        // Theme Engine Toggler Routine
+        function toggleTheme() {
+            const htmlElement = document.documentElement;
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Initialize user preference on DOM compilation
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Sidebar Navigation Route Manager
+        document.addEventListener('DOMContentLoaded', () => {
+            const navButtons = document.querySelectorAll('.nav-item');
+            const viewPanes = document.querySelectorAll('.view-pane');
+
+            navButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetViewId = button.getAttribute('data-target');
+                    if (!targetViewId) return;
+
+                    // Deactivate prior styling states across items
+                    navButtons.forEach(btn => {
+                        btn.className = "nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-campus-800/60 hover:text-campus-600 dark:hover:text-campus-400 transition-all duration-200";
+                    });
+
+                    // Set target look to active state
+                    button.className = "nav-item w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium text-sm transition-all duration-200 bg-campus-600 text-white shadow-md shadow-campus-600/20";
+
+                    // Hide visibility of alternate view blocks
+                    viewPanes.forEach(pane => pane.classList.add('hidden'));
+
+                    // Present current targeted panel structure
+                    const activePane = document.getElementById(`view-${targetViewId}`);
+                    if (activePane) activePane.classList.remove('hidden');
+                });
+            });
+
+            // Chart.js Data Analytics Dashboard Initialization
+            const ctx = document.getElementById('progressLineChart').getContext('2d');
+            
+            // Evaluates theme to generate matched text color styles on rendering graph lines
+            const isDark = document.documentElement.classList.contains('dark');
+            const axisColor = isDark ? '#64748b' : '#94a3b8';
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['W1', 'W2', 'W3', 'W4'],
+                    datasets: [{
+                        label: 'Study Hours',
+                        data: [10, 22, 18, 38],
+                        borderColor: '#0e94ea',
+                        borderWidth: 3,
+                        backgroundColor: 'rgba(14, 148, 234, 0.06)',
+                        fill: true,
+                        tension: 0.35,
+                        pointBackgroundColor: '#0e94ea',
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: axisColor, font: { size: 10 } } },
+                        y: { 
+                            grid: { color: isDark ? 'rgba(30, 41, 59, 0.5)' : 'rgba(226, 232, 240, 0.6)' }, 
+                            ticks: { color: axisColor, font: { size: 10 } } 
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
