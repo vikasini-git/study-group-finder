@@ -1,0 +1,240 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In — StudyTribe</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        :root {
+            --brand-primary: #328CC1;
+            --brand-dark: #0B3C5D;
+            --brand-accent: #D9B310;
+            --bg-main: #F8FAFC;
+            --border-color: #E2E8F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background: var(--bg-main);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .auth-container {
+            width: 100%;
+            max-width: 420px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
+        }
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .auth-header .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--brand-dark);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .auth-header h2 {
+            font-size: 22px;
+            color: var(--text-main);
+            margin-top: 10px;
+        }
+        .auth-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-main);
+        }
+        .input-wrapper {
+            position: relative;
+        }
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94A3B8;
+            font-size: 14px;
+        }
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .input-wrapper input:focus {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 3px rgba(50, 140, 193, 0.15);
+        }
+        .toggle-password {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #94A3B8;
+        }
+        .auth-error-msg {
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
+        .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
+        
+        .btn-submit {
+            width: 100%;
+            background: var(--brand-primary);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s ease;
+        }
+        .btn-submit:hover {
+            background: var(--brand-dark);
+        }
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .auth-footer a {
+            color: var(--brand-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="logo">
+                <i class="fa-solid fa-graduation-cap" style="color: var(--brand-primary);"></i> StudyTribe
+            </div>
+            <h2>Welcome Back</h2>
+            <p>Learn together. Grow together.</p>
+        </div>
+
+        <div class="auth-error-msg" id="authAlert"></div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="loginEmail">Institutional Email</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="loginEmail" required placeholder="name@college.edu">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="loginPassword">Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="loginPassword" required placeholder="••••••••">
+                    <i class="fa-solid fa-eye toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a href="signup.html">Get Started</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePasswordVisibility() {
+            const passInput = document.getElementById('loginPassword');
+            const eyeIcon = document.getElementById('eyeIcon');
+            if (passInput.type === 'password') {
+                passInput.type = 'text';
+                eyeIcon.className = 'fa-solid fa-eye-slash toggle-password';
+            } else {
+                passInput.type = 'password';
+                eyeIcon.className = 'fa-solid fa-eye toggle-password';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const alertBox = document.getElementById('authAlert');
+
+            try {
+                const userDatabase = JSON.parse(localStorage.getItem('db_users')) || [];
+                const matchedUser = userDatabase.find(user => user.email === email && user.password === password);
+
+                if (!matchedUser) {
+                    throw new Error("Invalid username or password credentials.");
+                }
+
+                localStorage.setItem('session_token', JSON.stringify({ name: matchedUser.name, email: matchedUser.email }));
+
+                showAlert('Login verified! Connecting... ✓', 'success');
+                setTimeout(() => { window.location.href = 'index.html'; }, 1500);
+
+            } catch (err) {
+                showAlert(err.message, 'error');
+            }
+        });
+
+        function showAlert(msg, type) {
+            const alertBox = document.getElementById('authAlert');
+            alertBox.className = `auth-error-msg ${type === 'success' ? 'alert-success' : 'alert-error'}`;
+            alertBox.textContent = msg;
+            alertBox.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
