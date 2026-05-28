@@ -8,18 +8,46 @@ const Auth = {
 
   getCurrentUser() {
     const session = localStorage.getItem(this.SESSION_KEY);
-    if (!session) {
-      // Fallback placeholder mock configuration profile injection
-      const defaultUser = {
-        id: "user-99",
-        name: "Alex",
-        avatar: "A",
-        subject: "Computer Science"
-      };
-      this.establishSession(defaultUser);
-      return defaultUser;
-    }
+    if (!session) return null;
     return JSON.parse(session);
+  },
+
+  async login(email, password) {
+    const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    this.establishSession({
+      id: data.student.id,
+      name: data.student.name,
+      email: data.student.email,
+      token: data.token,
+      avatar: data.student.name[0].toUpperCase()
+    });
+    return data;
+  },
+
+  async register(name, email, password) {
+    const res = await fetch('http://127.0.0.1:5000/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    this.establishSession({
+      id: data.student.id,
+      name: data.student.name,
+      email: data.student.email,
+      token: data.token,
+      avatar: data.student.name[0].toUpperCase()
+    });
+    return data;
   },
 
   establishSession(userObject) {
@@ -30,13 +58,18 @@ const Auth = {
   terminateSession() {
     localStorage.removeItem(this.SESSION_KEY);
     AppEventHub.emit('auth:stateChange', { user: null });
-    window.location.reload();
+    window.location.href = 'login.html';
+  },
+
+  getToken() {
+    const user = this.getCurrentUser();
+    return user ? user.token : null;
   },
 
   validateAuthenticationGuard() {
     const user = this.getCurrentUser();
     if (!user) {
-      console.warn("Unauthorized access exception intercept. Routing context to landing shell.");
+      window.location.href = 'login.html';
       return false;
     }
     return true;
@@ -47,9 +80,10 @@ const Auth = {
 AppEventHub.on('auth:stateChange', (e) => {
   const profileContainer = document.querySelector('.user-profile-summary');
   if (!profileContainer) return;
-
   if (e.detail.user) {
-    document.querySelector('.user-name').textContent = escapeHtml(e.detail.user.name);
-    document.querySelector('.user-avatar').textContent = escapeHtml(e.detail.user.avatarated || e.detail.user.name[0]);
+    const nameEl = document.querySelector('.user-name');
+    const avatarEl = document.querySelector('.user-avatar');
+    if (nameEl) nameEl.textContent = escapeHtml(e.detail.user.name);
+    if (avatarEl) avatarEl.textContent = escapeHtml(e.detail.user.avatar);
   }
 });
