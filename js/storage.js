@@ -4,88 +4,54 @@
  * =========================================================================
  */
 const Storage = {
-  // Initialization hook to inject system defaults if local space is clean
-  init() {
-    if (!localStorage.getItem('study_groups')) {
-      const defaultGroups = [
-        { id: "g1", name: "Algorithms Core", subject: "Computer Science", members: ["user-99", "user-02", "user-03"] },
-        { id: "g2", name: "Embedded Circuits", subject: "Electrical Engineering", members: ["user-99", "user-05"] },
-        { id: "g3", name: "Financial Analytics", subject: "Business & Commerce", members: ["user-02", "user-05"] }
-      ];
-      localStorage.setItem('study_groups', JSON.stringify(defaultGroups));
-    }
-    
-    if (!localStorage.getItem('user_registry')) {
-      const defaultUsers = {
-        "user-99": { id: "user-99", name: "Alex", avatar: "A", email: "alex@vardhaman.org" },
-        "user-02": { id: "user-02", name: "Sam", avatar: "S", email: "sam@peerstream.dev" },
-        "user-03": { id: "user-03", name: "Rahul", avatar: "R", email: "rahul@eng.edu" },
-        "user-05": { id: "user-05", name: "Taylor", avatar: "T", email: "taylor@cloud.com" }
-      };
-      localStorage.setItem('user_registry', JSON.stringify(defaultUsers));
-    }
-  },
 
   getGroups() {
-    this.init();
-    return JSON.parse(localStorage.getItem('study_groups'));
+    return fetch('http://127.0.0.1:5000/api/groups', {
+      headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+    }).then(res => res.json());
   },
 
   getGroupById(id) {
-    return this.getGroups().find(g => g.id === id) || null;
+    return fetch('http://127.0.0.1:5000/api/groups/' + id, {
+      headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+    }).then(res => res.json());
   },
 
   getMessages(groupId) {
-    const stored = localStorage.getItem(`chat_msg_${groupId}`);
-    return stored ? JSON.parse(stored) : [];
+    return fetch('http://127.0.0.1:5000/api/messages/' + groupId, {
+      headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+    }).then(res => res.json());
   },
 
   getUserById(userId) {
-    this.init();
-    const registry = JSON.parse(localStorage.getItem('user_registry'));
-    return registry[userId] || { id: userId, name: "External Peer", avatar: "?" };
+    return fetch('http://127.0.0.1:5000/api/students/' + userId, {
+      headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+    }).then(res => res.json());
   },
 
   saveMessage(groupId, text) {
-    const activeUser = Auth.getCurrentUser();
-    if (!activeUser || !text.trim()) return null;
-
-    const messages = this.getMessages(groupId);
-    const newMessage = {
-      id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : 'msg-' + Date.now(),
-      userId: activeUser.id,
-      text: text.trim(),
-      time: Date.now()
-    };
-
-    messages.push(newMessage);
-    localStorage.setItem(`chat_msg_${groupId}`, JSON.stringify(messages));
-
-    // Notify event stream instantly
-    AppEventHub.emit('chat:updated', { groupId, message: newMessage });
-    return newMessage;
+    if (!text.trim()) return null;
+    return fetch('http://127.0.0.1:5000/api/messages/' + groupId, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + Auth.getToken()
+      },
+      body: JSON.stringify({ content: text.trim() })
+    }).then(res => res.json());
   },
 
   createGroup(name, subject) {
-    const activeUser = Auth.getCurrentUser();
-    if (!activeUser || !name.trim() || !subject.trim()) return null;
-
-    const groups = this.getGroups();
-    const newGroup = {
-      id: 'g-' + Date.now(),
-      name: name.trim(),
-      subject: subject.trim(),
-      members: [activeUser.id]
-    };
-
-    groups.push(newGroup);
-    localStorage.setItem('study_groups', JSON.stringify(groups));
-
-    // Notify ecosystem grid to update card interfaces dynamically
-    AppEventHub.emit('groups:mutated', { newGroup });
-    return newGroup;
+    return fetch('http://127.0.0.1:5000/api/groups/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + Auth.getToken()
+      },
+      body: JSON.stringify({ name, subject, mode: 'ONLINE' })
+    }).then(res => res.json()).then(newGroup => {
+      AppEventHub.emit('groups:mutated', { newGroup });
+      return newGroup;
+    });
   }
 };
-
-// Auto boot core dataset references
-Storage.init();
