@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="style.css">
-    
     <style>
         :root {
             --brand-primary: #328CC1;
@@ -38,10 +36,7 @@
             padding: 40px 30px;
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
         }
-        .auth-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        .auth-header { text-align: center; margin-bottom: 30px; }
         .auth-header .logo {
             font-size: 26px;
             font-weight: 700;
@@ -52,19 +47,9 @@
             justify-content: center;
             gap: 10px;
         }
-        .auth-header h2 {
-            font-size: 22px;
-            color: var(--text-main);
-            margin-top: 10px;
-        }
-        .auth-header p {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
+        .auth-header h2 { font-size: 22px; color: var(--text-main); margin-top: 10px; }
+        .auth-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+        .input-group { margin-bottom: 20px; }
         .input-group label {
             display: block;
             font-size: 13px;
@@ -72,9 +57,7 @@
             margin-bottom: 6px;
             color: var(--text-main);
         }
-        .input-wrapper {
-            position: relative;
-        }
+        .input-wrapper { position: relative; }
         .input-wrapper i {
             position: absolute;
             left: 14px;
@@ -115,7 +98,6 @@
         }
         .alert-error { background: #FEE2E2; color: #991B1B; border: 1px solid #FCA5A5; }
         .alert-success { background: #DCFCE7; color: #166534; border: 1px solid #86EFAC; }
-        
         .btn-submit {
             width: 100%;
             background: var(--brand-primary);
@@ -132,9 +114,7 @@
             gap: 8px;
             transition: background 0.2s ease;
         }
-        .btn-submit:hover {
-            background: var(--brand-dark);
-        }
+        .btn-submit:hover { background: var(--brand-dark); }
         .auth-footer {
             text-align: center;
             margin-top: 24px;
@@ -146,13 +126,10 @@
             text-decoration: none;
             font-weight: 600;
         }
-        .auth-footer a:hover {
-            text-decoration: underline;
-        }
+        .auth-footer a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
-
     <div class="auth-container">
         <div class="auth-header">
             <div class="logo">
@@ -172,7 +149,6 @@
                     <input type="email" id="loginEmail" required placeholder="name@college.edu">
                 </div>
             </div>
-
             <div class="input-group">
                 <label for="loginPassword">Password</label>
                 <div class="input-wrapper">
@@ -181,7 +157,6 @@
                     <i class="fa-solid fa-eye toggle-password" id="eyeIcon" onclick="togglePasswordVisibility()"></i>
                 </div>
             </div>
-
             <button type="submit" class="btn-submit">
                 Sign In <i class="fa-solid fa-arrow-right-to-bracket"></i>
             </button>
@@ -209,18 +184,17 @@
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-            const alertBox = document.getElementById('authAlert');
 
             try {
-                const userDatabase = JSON.parse(localStorage.getItem('db_users')) || [];
-                const matchedUser = userDatabase.find(user => user.email === email && user.password === password);
+                const res = await fetch('http://127.0.0.1:5000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error);
 
-                if (!matchedUser) {
-                    throw new Error("Invalid username or password credentials.");
-                }
-
-                localStorage.setItem('session_token', JSON.stringify({ name: matchedUser.name, email: matchedUser.email }));
-
+                localStorage.setItem('session_token', JSON.stringify(data));
                 showAlert('Login verified! Connecting... ✓', 'success');
                 setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
 
@@ -236,5 +210,4 @@
             alertBox.style.display = 'block';
         }
     </script>
-</body>
-</html>
+</bod
