@@ -3,26 +3,16 @@
  * 1. GLOBAL CORE ARCHITECTURE & STATE
  * =========================================================================
  */
-const currentUser = {
-  id: "user-99",
-  name: "Alex",
-  avatar: "A",
-  subject: "Computer Science" // Fallback affinity for AI recommendations
-};
-
 let activeChatGroupId = null;
 let currentChatListener = null;
+let socket = null;
 
-/**
- * Global App Event Hub (Standard DOM Custom Events)
- * Replaces old setInterval loops with instantaneous reactive updates.
- */
 const AppEventHub = {
   emit(eventName, detail = {}) {
-    const event = new CustomEvent(eventName, { 
+    const event = new CustomEvent(eventName, {
       detail,
       bubbles: true,
-      cancelable: true 
+      cancelable: true
     });
     window.dispatchEvent(event);
   },
@@ -36,56 +26,26 @@ const AppEventHub = {
 
 /**
  * =========================================================================
- * 2. DATA LAYER (MOCK ENHANCED STORAGE UTILITY)
+ * 2. SOCKET.IO INITIALIZATION
  * =========================================================================
  */
-const Storage = {
-  getGroupById(id) {
-    const groups = this.getGroups();
-    return groups.find(g => g.id === id) || null;
-  },
+function initSocket() {
+  socket = io('http://127.0.0.1:5000');
 
-  getGroups() {
-    const defaultGroups = [
-      { id: "g1", name: "Algorithms Core", subject: "Computer Science", members: ["user-99", "user-02"] },
-      { id: "g2", name: "Embedded Circuits", subject: "Electrical Engineering", members: ["user-05"] }
-    ];
-    const stored = localStorage.getItem('study_groups');
-    return stored ? JSON.parse(stored) : defaultGroups;
-  },
+  socket.on('connect', () => {
+    console.log('Connected to Socket.io server');
+  });
 
-  getMessages(groupId) {
-    const stored = localStorage.getItem(`chat_msg_${groupId}`);
-    return stored ? JSON.parse(stored) : [];
-  },
+  socket.on('newMessage', (msg) => {
+    if (msg.groupId === activeChatGroupId) {
+      appendSingleMessage(msg);
+    }
+  });
 
-  getUserById(userId) {
-    const users = {
-      "user-99": { id: "user-99", name: "Alex", avatar: "A" },
-      "user-02": { id: "user-02", name: "Sam", avatar: "S" },
-      "user-05": { id: "user-05", name: "Taylor", avatar: "T" }
-    };
-    return users[userId] || { id: userId, name: "Student", avatar: "?" };
-  },
-
-  saveMessage(groupId, text) {
-    if (!text.trim()) return null;
-    const messages = this.getMessages(groupId);
-    const newMessage = {
-      id: typeof crypto.randomUUID === 'function' ? crypto.randomUUID() : 'msg-' + Date.now(),
-      userId: currentUser.id,
-      text: text,
-      time: Date.now()
-    };
-    
-    messages.push(newMessage);
-    localStorage.setItem(`chat_msg_${groupId}`, JSON.stringify(messages));
-    
-    // Broadcast creation to instantly update views across the engine
-    AppEventHub.emit('chat:updated', { groupId, message: newMessage });
-    return newMessage;
-  }
-};
+  socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+  });
+}
 
 /**
  * =========================================================================
@@ -93,17 +53,15 @@ const Storage = {
  * =========================================================================
  */
 document.addEventListener('DOMContentLoaded', () => {
+  initSocket();
   initGlobalModalListeners();
   initDashboard();
   initNotes();
   initChatPanel();
-  
-  // Render base visual states on start
   renderAISuggestions();
 });
 
 function initGlobalModalListeners() {
-  // Catch general user escape key commands to ensure background memory teardowns trigger
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && activeChatGroupId) {
       closeChatPanel();
@@ -125,7 +83,7 @@ function initNotes() {
   const saveNoteBtn = document.getElementById('saveNoteBtn');
   if (saveNoteBtn) {
     saveNoteBtn.addEventListener('click', () => {
-      // Custom application notes handling logic here
+      // Notes handling logic
     });
   }
 }
@@ -135,64 +93,46 @@ function initChatPanel() {
   const msgInput = document.getElementById('msgInput');
   const chatClose = document.getElementById('chatClose');
 
-  if (sendBtn) {
-    sendBtn.addEventListener('click', sendChatMessage);
-  }
-  
+  if (sendBtn) sendBtn.addEventListener('click', sendChatMessage);
+
   if (msgInput) {
-    msgInput.addEventListener('keydown', e => { 
-      if (e.key === 'Enter' && !e.shiftKey) { 
-        e.preventDefault(); 
-        sendChatMessage(); 
+    msgInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
       }
     });
   }
-  
-  if (chatClose) {
-    chatClose.addEventListener('click', closeChatPanel);
-  }
+
+  if (chatClose) chatClose.addEventListener('click', closeChatPanel);
 }
 
 /**
  * =========================================================================
- * 4. CHAT INTERACTION ENGINE
+ * 4. CHAT INTERACTION ENGINE (Socket.io)
  * =========================================================================
  */
 function openChat(groupId) {
   activeChatGroupId = groupId;
-  const group = Storage.getGroupById(groupId);
-  if (!group) return;
 
-  // Build out static framework fields
-  document.getElementById('chatGroupName').textContent = group.name;
-  document.getElementById('chatGroupSubject').textContent = group.subject;
-  document.getElementById('chatMemberCount').textContent = `${group.members.length} members`;
+  Storage.getGroupById(groupId).then(group => {
+    if (!group) return;
 
-  // Render historically available records on load
-  renderChatMessages(groupId);
-  openModal('chatModal');
+    document.getElementById('chatGroupName').textContent = group.name;
+    document.getElementById('chatGroupSubject').textContent = group.subject;
+    document.getElementById('chatMemberCount').textContent = group.members
+      ? group.members.length + ' members'
+      : '';
 
-  // Clear existing dynamic listeners to maintain clean pipeline memory bounds
-  if (currentChatListener) {
-    AppEventHub.off('chat:updated', currentChatListener);
-  }
+    // Join Socket.io room
+    if (socket) socket.emit('joinGroup', groupId);
 
-  // Define situational action response matching target group updates
-  currentChatListener = (event) => {
-    if (event.detail.groupId === groupId) {
-      appendSingleMessage(event.detail.message);
-    }
-  };
-
-  // Bind listener to custom app stream event
-  AppEventHub.on('chat:updated', currentChatListener);
+    renderChatMessages(groupId);
+    openModal('chatModal');
+  });
 }
 
 function closeChatPanel() {
-  if (currentChatListener) {
-    AppEventHub.off('chat:updated', currentChatListener);
-    currentChatListener = null;
-  }
   activeChatGroupId = null;
   closeModal('chatModal');
 }
@@ -204,31 +144,39 @@ function sendChatMessage() {
   const text = input.value.trim();
   if (!text) return;
 
-  Storage.saveMessage(activeChatGroupId, text);
+  const user = Auth.getCurrentUser();
+
+  // Send via Socket.io for real-time
+  if (socket) {
+    socket.emit('sendMessage', {
+      groupId: activeChatGroupId,
+      studentId: user.id,
+      content: text
+    });
+  }
+
   input.value = '';
 }
 
-function renderChatMessages(groupId) {
+async function renderChatMessages(groupId) {
   const container = document.getElementById('chatMessages');
   if (!container) return;
-  
-  const messages = Storage.getMessages(groupId);
 
-  if (messages.length === 0) {
+  const messages = await Storage.getMessages(groupId);
+
+  if (!messages || messages.length === 0) {
     container.innerHTML = `<div class="chat-empty">No messages yet. Start the conversation!</div>`;
     return;
   }
-  
+
   container.innerHTML = messages.map(m => {
-    const user = Storage.getUserById(m.userId);
-    const isMine = m.userId === currentUser.id;
+    const user = Auth.getCurrentUser();
+    const isMine = m.student_id === user.id;
     return `
       <div class="message ${isMine ? 'mine' : 'theirs'}">
-        ${!isMine ? `<div class="msg-avatar" style="background:${avatarColor(user?.avatar || '?')}">${user?.avatar || '?'}</div>` : ''}
         <div class="msg-bubble">
-          ${!isMine ? `<div class="msg-sender">${user?.name || 'Unknown'}</div>` : ''}
-          <div class="msg-text">${escapeHtml(m.text)}</div>
-          <div class="msg-time">${formatTime(m.time)}</div>
+          <div class="msg-text">${escapeHtml(m.content)}</div>
+          <div class="msg-time">${formatTime(m.sent_at)}</div>
         </div>
       </div>`;
   }).join('');
@@ -240,20 +188,17 @@ function appendSingleMessage(message) {
   const container = document.getElementById('chatMessages');
   if (!container) return;
 
-  // Clear empty state text block if present
   const emptyState = container.querySelector('.chat-empty');
   if (emptyState) emptyState.remove();
 
-  const isMine = message.userId === currentUser.id;
-  const user = Storage.getUserById(message.userId);
+  const user = Auth.getCurrentUser();
+  const isMine = message.studentId === user.id;
 
   const messageHTML = `
     <div class="message ${isMine ? 'mine' : 'theirs'}">
-      ${!isMine ? `<div class="msg-avatar" style="background:${avatarColor(user?.avatar || '?')}">${user?.avatar || '?'}</div>` : ''}
       <div class="msg-bubble">
-        ${!isMine ? `<div class="msg-sender">${user?.name || 'Unknown'}</div>` : ''}
-        <div class="msg-text">${escapeHtml(message.text)}</div>
-        <div class="msg-time">${formatTime(message.time)}</div>
+        <div class="msg-text">${escapeHtml(message.content)}</div>
+        <div class="msg-time">${formatTime(Date.now())}</div>
       </div>
     </div>`;
 
@@ -263,33 +208,49 @@ function appendSingleMessage(message) {
 
 /**
  * =========================================================================
- * 5. AUXILIARY VIEW DISPLAY COMPONENT BUILDERS
+ * 5. AI SUGGESTIONS
  * =========================================================================
  */
-function renderAISuggestions() {
+async function renderAISuggestions() {
   const container = document.getElementById('aiSuggestionsContainer');
   if (!container) return;
 
-  const groups = Storage.getGroups();
-  const affinitySubject = groups.length > 0 ? groups[0].subject : currentUser.subject;
+  const user = Auth.getCurrentUser();
+  if (!user) return;
 
-  container.innerHTML = `
-    <div class="ai-suggestion-card">
-      <h4>Recommended Strategy for ${escapeHtml(affinitySubject)}</h4>
-      <p>Based on your active review clusters, dedicating 25 minutes to spaced-repetition modules today will maximize retention curves before upcoming midterms.</p>
-    </div>`;
+  try {
+    const res = await fetch('http://127.0.0.1:5000/api/groups/match', {
+      headers: { 'Authorization': 'Bearer ' + Auth.getToken() }
+    });
+    const matches = await res.json();
+
+    if (!matches || matches.length === 0) {
+      container.innerHTML = `<div class="ai-suggestion-card"><p>No matches found yet. Join more groups!</p></div>`;
+      return;
+    }
+
+    container.innerHTML = matches.slice(0, 3).map(g => `
+      <div class="ai-suggestion-card">
+        <h4>${escapeHtml(g.name)}</h4>
+        <p>Subject: ${escapeHtml(g.subject)}</p>
+        <p>Match Score: ${g.matchScore} skill gaps filled</p>
+      </div>
+    `).join('');
+  } catch (err) {
+    console.error('AI match error:', err);
+  }
 }
 
 /**
  * =========================================================================
- * 6. SECURITY UTILITIES & NATIVE UI PARSERS
+ * 6. UTILITIES
  * =========================================================================
  */
 function openModal(id) {
   const target = document.getElementById(id);
   if (target) {
     target.classList.add('active');
-    target.style.display = 'block'; 
+    target.style.display = 'block';
   }
 }
 
